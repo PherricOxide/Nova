@@ -123,7 +123,7 @@ script.
         $('#if' + i)[0].checked = true;
         $('#if' + i)[0].disabled = true;
         $('#DEFAULT')[0].value = 'true';
-      }
+      }      
     }
     else
     {
@@ -133,11 +133,13 @@ script.
         $('#DEFAULT')[0].value = 'false';
       }
     }
+    checkAtLeastOne();
   }
   
   function checkAtLeastOne()
   {
     var numNotChecked = 0;
+    var c = [];
     
     for(var i = 0; i < $('#length').val(); i++)
     {
@@ -145,12 +147,18 @@ script.
       {
         numNotChecked++;
       }
+      else
+      {
+        c.push($('#if' + i).val());
+      }
     }
-    
+    console.log(c); 
     if(numNotChecked == $('#length').val())
     {
       $('#if0')[0].checked = true;
+      c.push($('#if0').val());
     }
+    $('#IF_AGGREGATE').val(c.toString());
   }
   
   function checkOnlyOne(which)
@@ -522,6 +530,7 @@ script.
       handleRsyslogPane();
       handleSMTPPaneSlide();
       handleDoppelPaneSlide();
+      changeDisabled();
     });
   }
 
@@ -652,6 +661,7 @@ h2 Ethernet Interfaces
         
 input(type='hidden', id='length', value=INTERFACES.length) 
 input(type='hidden', name='DEFAULT', id='DEFAULT', value=DEFAULT)
+input(type='hidden', name='INTERFACES', id='IF_AGGREGATE')
 
 br
 input(type='hidden', name='DM_ENABLED', value='0')
