@@ -1822,7 +1822,7 @@ app.post('/configureNovaSave', function (req, res)
         }
     },
     {
-        key:  "INTERFACE"
+        key:  "INTERFACES"
         ,validator: function(val) {
             validator.check(val, this.key + ' must not be empty').notEmpty();
         }
@@ -2103,32 +2103,19 @@ app.post('/configureNovaSave', function (req, res)
     }
 
     var interfaces = "";
-    var oneIface = false;
 
     if(req.body["DOPPELGANGER_INTERFACE"] !== undefined) 
     {
         NovaCommon.config.SetDoppelInterface(req.body["DOPPELGANGER_INTERFACE"]);
     }
 
-    if(req.body["INTERFACE"] !== undefined) 
+    if(req.body["INTERFACES"] !== undefined) 
     {
-        for(item in req.body["INTERFACE"]) 
+        spl = req.body["INTERFACES"].split(',');
+        for(item in spl) 
         {
-            if(req.body["INTERFACE"][item].length > 1) 
-            {
-                interfaces += " " + req.body["INTERFACE"][item];
-                NovaCommon.config.AddIface(req.body["INTERFACE"][item]);
-            } 
-            else 
-            {
-                interfaces += req.body["INTERFACE"][item];
-                oneIface = true;
-            }
-        }
-
-        if(oneIface) 
-        {
-            NovaCommon.config.AddIface(interfaces);
+          interfaces += spl[item] + " ";
+          NovaCommon.config.AddIface(spl[item]);
         }
 
         req.body["INTERFACE"] = interfaces;
@@ -2219,21 +2206,13 @@ app.post('/configureNovaSave', function (req, res)
     } 
     else 
     {
-      if(req.body["INTERFACE"] !== undefined && req.body["DEFAULT"] === undefined)
+      NovaCommon.config.UseAllInterfaces(req.body["DEFAULT"]);
+      if(req.body["DEFAULT"] == 'true')
       {
-        req.body["DEFAULT"] = false;
-        NovaCommon.config.UseAllInterfaces(false);
-        NovaCommon.config.WriteSetting("INTERFACE", req.body["INTERFACE"]);
-      }
-      else if(req.body["INTERFACE"] === undefined)
-      {
-        req.body["DEFAULT"] = true;
-        NovaCommon.config.UseAllInterfaces(true);
         NovaCommon.config.WriteSetting("INTERFACE", "default");
       }
       else
       {
-        NovaCommon.config.UseAllInterfaces(req.body["DEFAULT"]);
         NovaCommon.config.WriteSetting("INTERFACE", req.body["INTERFACE"]);
       }
 
