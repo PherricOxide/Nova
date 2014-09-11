@@ -279,7 +279,6 @@ var logLines = new Array();
 
 function LiveFileReader(filePath, cb) {
     this.processedLines = new Array();
-    this.initialContent = "";
     this.initialLength = 0;
     this.filePath = filePath;
     this.cb = cb;
@@ -295,13 +294,13 @@ function LiveFileReader(filePath, cb) {
         if (err)
         {
             LOG("ERROR", "ERROR reading file: " + err);
+            console.log("ERROR reading file: " + err);
             self.cb(err);
             return;
         }
 
-        self.initialContent = String(data);
-        self.initialLength = self.initialContent.length;
-        self.processedLines = self.initialContent.split("\n");
+        self.initialLength = String(data).length;
+        self.processedLines = String(data).split("\n");
         self.reading = false;
         
         if (self.processedLines[self.processedLines.length - 1] == "") {
@@ -319,6 +318,7 @@ function LiveFileReader(filePath, cb) {
             if (err)
             {
                 LOG("ERROR", "Unable to open log file for reading due to error: " + err);
+                console.log("Unable to open log file for reading due to error: " + err);
                 self.cb(err);
                 return;
             }
@@ -332,6 +332,7 @@ function LiveFileReader(filePath, cb) {
             if (err)
             {
                 LOG("ERROR", "Error reading log file: " + err);
+                console.log("ERROR reading file: " + err);
                 self(err);
                 return;
             }
@@ -360,7 +361,7 @@ function LiveFileReader(filePath, cb) {
         {
             var fb = fs.read(self.file, new Buffer(self.chunkLength), 0, self.chunkLength, self.readBytes, self.processData);
         }
-
+    
         fs.watch(self.filePath, {persistent: true}, function(event, filename)
         //fs.watchFile(self.filePath, function(curr, prev)
         {
@@ -372,8 +373,6 @@ function LiveFileReader(filePath, cb) {
         });
     });
 }
-
-
 
 var initLogWatch = function ()
 {
@@ -388,6 +387,7 @@ var initLogWatch = function ()
             if (err)
             {
                 LOG("ERROR", err);
+                console.log("ERROR: " + err);
                 return;
             }
         
@@ -401,7 +401,6 @@ var initLogWatch = function ()
             everyone.now.newLogLine(lineNum, line);
         } catch (err) {};
     });
-    
     var novadLogFileReader = new LiveFileReader(honeydLogPath, function(err, line, lineNum) {
         if (err)
         {
@@ -413,6 +412,7 @@ var initLogWatch = function ()
             if (err)
             {
                 LOG("ERROR", err);
+                console.log("ERROR: " + err);
                 return;
             }
         
@@ -430,6 +430,8 @@ var initLogWatch = function ()
 }
 
 initLogWatch();
+
+console.log('Watching Nova.log and Honeyd.log');
 
 if(NovaCommon.config.ReadSetting('MASTER_UI_ENABLED') === '1')
 {

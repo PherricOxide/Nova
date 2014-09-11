@@ -250,6 +250,7 @@ install-data:
 	cp -frup Installer/sharedFiles "$(DESTDIR)/usr/share/nova/sharedFiles"
 	cp -frup Installer/userFiles "$(DESTDIR)/usr/share/nova/userFiles"
 	cp -frup Installer/nova_init "$(DESTDIR)/usr/share/nova"
+	cp -frup Installer/miscFiles/novalr "$(DESTDIR)/etc/logrotate.d"
 	cp -frup Installer/createDatabase.sh "$(DESTDIR)/usr/share/nova"
 
 	#Copy the scripts and logs
@@ -327,6 +328,7 @@ uninstall-files:
 	rm -f "$(DESTDIR)/etc/rsyslog.d/40-nova.conf"
 	rm -f "$(DESTDIR)/etc/rsyslog.d/41-nova.conf"
 	rm -f "$(DESTDIR)/etc/sysctl.d/30-novactl.conf"
+	rm -f "$(DESTDIR)/etc/logrotate.d/novalr"
 
 uninstall-permissions:
 	sh debian/postrm
