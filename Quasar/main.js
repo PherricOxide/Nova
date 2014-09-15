@@ -1908,7 +1908,6 @@ app.post('/configureNovaSave', function (req, res)
     {
         key:  "SMTP_ADDR"
         ,validator: function(val) {
-            console.log("Got an smtp address of " + val);
             validator.check(val, this.key + ' is the wrong format').regex('^(([A-z]|[0-9])*\\.)*(([A-z]|[0-9])*)\\@((([A-z]|[0-9])*)\\.)*(([A-z]|[0-9])*)\\.(([A-z]|[0-9])*)$');
         }
     },
@@ -2228,17 +2227,12 @@ app.post('/configureNovaSave', function (req, res)
       }
 
       NovaCommon.config.ReloadConfiguration();
-
+      
       if(req.body["EMAIL_ALERTS_ENABLED"] == "0")
       {
-        var spawn = require('sudo');
-        var options = {
-          cachePassword: true
-          , prompt: 'You need permission to remove the Nova mail script from the cron directories.'
-        };
-        
-        var execution = ['cleannovasendmail.sh'];
-        var rm = spawn(execution, options); 
+        var spawn = require('child_process').spawn;
+        var execution = 'cleannovasendmail';
+        var rm = spawn(execution, []); 
         rm.on('exit', function(code){
           //console.log('code == ' + code);
         });
@@ -2261,8 +2255,8 @@ app.post('/configureNovaSave', function (req, res)
           if(maildaemon == '')
           {
             var spawn = require('child_process').spawn;
-            var args = ['placenovasendmail', interval];
-            cpspawn = spawn('sudo', args);
+            var args = [interval];
+            cpspawn = spawn('placenovasendmail', args);
             cpspawn.on('close', function(code){
               if(code === 0)
               {
@@ -2281,6 +2275,40 @@ app.post('/configureNovaSave', function (req, res)
                 RenderError(res, 'Could not start mail daemon, check /etc/cron.' + interval + ' for orphaned script novasendmail', '/suspects');
               }
             });
+          }
+          else
+          {
+              var spawn = require('child_process').spawn;
+              var execution = 'cleannovasendmail';
+              var rm = spawn(execution, []); 
+              rm.on('exit', function(code){
+                  //console.log('code == ' + code);
+                  if(maildaemon != '')
+                  {
+                    maildaemon.kill('SIGINT');
+                  }
+                  var spawn = require('child_process').spawn;
+                  var args = [interval];
+                  cpspawn = spawn('placenovasendmail', args);
+                  cpspawn.on('close', function(code){
+                    if(code === 0)
+                    {
+                      var spawn = require('child_process').spawn;
+                      var execstring = 'novamaildaemon.pl';
+                      maildaemon = spawn(execstring.toString());
+                      maildaemon.on('close', function(code){
+                        if(code !== 0)
+                        {
+                          console.log('novamaildaemon.pl died an unnatural death with code ' + code);
+                        }
+                      }); 
+                    }
+                    else
+                    {
+                      RenderError(res, 'Could not start mail daemon, check /etc/cron.' + interval + ' for orphaned script novasendmail', '/suspects');
+                    }
+                  });
+              });
           }
           NovaCommon.config.WriteSetting("EMAIL_ALERTS_ENABLED", "1");
         }

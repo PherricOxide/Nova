@@ -258,8 +258,9 @@ install-data:
 	install Installer/nova_rsyslog_helper "$(DESTDIR)/usr/bin"
 	install Installer/miscFiles/createNovaScriptAlert.py "$(DESTDIR)/usr/bin"
 	install Installer/miscFiles/novamaildaemon.pl "$(DESTDIR)/usr/bin"
-	install Installer/miscFiles/cleannovasendmail.sh "$(DESTDIR)/usr/bin"
+	install Installer/miscFiles/cleannovasendmail "$(DESTDIR)/usr/bin"
 	install Installer/miscFiles/placenovasendmail "$(DESTDIR)/usr/bin"
+	install Installer/miscFiles/novasendmail "$(DESTDIR)/usr/bin"
 	#Install permissions
 	install Installer/miscFiles/sudoers_nova "$(DESTDIR)/etc/sudoers.d/" --mode=0440
 	install Installer/miscFiles/40-nova.conf "$(DESTDIR)/etc/rsyslog.d/" --mode=664
@@ -321,6 +322,10 @@ uninstall-files:
 	rm -f "$(DESTDIR)/usr/bin/nova_init"
 	rm -f "$(DESTDIR)/usr/bin/quasar"
 	rm -f "$(DESTDIR)/usr/bin/novatrainer"
+	rm -f "$(DESTDIR)/usr/bin/cleannovasendmail"
+	rm -f "$(DESTDIR)/usr/bin/novamaildaemon.pl"
+	rm -f "$(DESTDIR)/usr/bin/placenovasendmail"
+	rm -f "$(DESTDIR)/usr/bin/novasendmail"
 	rm -f "$(DESTDIR)/usr/lib/libNova_UI_Core.so"
 	rm -f "$(DESTDIR)/etc/sudoers.d/sudoers_nova"
 	rm -f "$(DESTDIR)/etc/sudoers.d/sudoers_nova_debug"
