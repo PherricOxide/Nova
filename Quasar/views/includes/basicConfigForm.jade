@@ -205,10 +205,14 @@ script.
     if($('#EMAIL_ALERTS_ENABLED').is(':checked'))
     {
       $('#smtpPane').slideDown(400);
+      $('#smtpTest').fadeIn(400);
+      $('#hiddenEmailEnabled').val('1');
     }
     else
     {
       $('#smtpPane').slideUp(400);
+      $('#smtpTest').fadeOut(400);
+      $('#hiddenEmailEnabled').val('0');
     }
   }
   
@@ -414,24 +418,35 @@ script.
     if($('#SMTP_USEAUTH').is(':checked'))
     {
       $('#SMTP_USEAUTH')[0].value = '1';
-      $('#SMTP_PORT')[0].value = '#{SMTP_PORT}';
-      $('#SMTP_USER').removeAttr('readonly');
-      $('#SMTP_PASS').removeAttr('readonly');
-      $('#SMTP_USER').removeAttr('style');
-      $('#SMTP_PASS').removeAttr('style');
       $('#protoheader').html('smtps://');
     }
     else
     {
       $('#SMTP_USEAUTH')[0].value = '0';
-      $('#SMTP_PORT')[0].value = '25';
-      $('#SMTP_USER').attr('readonly', true);
-      $('#SMTP_PASS').attr('readonly', true);
-      var cssChange = {'font-style':'italic',
-                       'color':'grey'};
-      $('#SMTP_USER').css(cssChange);
-      $('#SMTP_PASS').css(cssChange);
       $('#protoheader').html('smtp://');
+    }
+  }
+  
+  function testSMTPSettings()
+  {
+    console.log($('#EMAIL_ALERTS_ENABLED').is(':checked'));
+    if($('#EMAIL_ALERTS_ENABLED').is(':checked'))
+    {
+        var settings = {};
+        settings.SERVER = $('#SMTP_DOMAIN').val();
+        settings.PORT = $('#SMTP_PORT').val();
+        settings.FROM = $('#SMTP_ADDR').val();
+        settings.PASS = $('#SMTP_PASS').val();
+        settings.AUTH = $('#SMTP_USEAUTH')[0].value;
+        settings.TO = $("#recipAgg").val();
+        now.testSMTPSettings(settings, function(out){
+            var p = out;
+            if(out == "")
+            {
+                p = "SMTP test indicates no overt failures, please check recipient email inboxes";
+            }
+            alert(p);
+        });
     }
   }
   
@@ -537,12 +552,13 @@ script.
 input(type='hidden', name='ADVANCED', value='0')
 
 h2 Email Notifications
-input(type='hidden', name='EMAIL_ALERTS_ENABLED', value="0")
+input(type='hidden', id='hiddenEmailEnabled', name='EMAIL_ALERTS_ENABLED', value="0")
 if(EMAIL_ALERTS_ENABLED == 1)
-  input(type='checkbox', id='EMAIL_ALERTS_ENABLED', name='EMAIL_ALERTS_ENABLED', value="1", checked=true, onclick='handleSMTPPaneSlide()')
+  input(type='checkbox', id='EMAIL_ALERTS_ENABLED', value="1", checked=true, onclick='handleSMTPPaneSlide()')
 else
-  input(type='checkbox', id='EMAIL_ALERTS_ENABLED', name='EMAIL_ALERTS_ENABLED', value="1", onclick='handleSMTPPaneSlide()')
+  input(type='checkbox', id='EMAIL_ALERTS_ENABLED', value="0", onclick='handleSMTPPaneSlide()')
 span.labelSpan Enable email alerts?
+button#smtpTest(type='button', onclick='testSMTPSettings()') Test SMTP Settings
 br
 div#smtpPane
   input(type='hidden', name='SMTP_USEAUTH', value='0')
@@ -550,18 +566,8 @@ div#smtpPane
     input(type='checkbox', id='SMTP_USEAUTH', name='SMTP_USEAUTH', value=SMTP_USEAUTH, onclick='changeSMTPAuth()', checked=true)
   else
     input(type='checkbox', id='SMTP_USEAUTH', name='SMTP_USEAUTH', value=SMTP_USEAUTH, onclick='changeSMTPAuth()')
-  span.labelSpan Use SMTP Authentication?
+  span.labelSpan Use SMTP STARTTLS command if available?
   br
-  br
-  
-  label SMTP Address
-  br
-  input.wide(name='SMTP_ADDR', value=SMTP_ADDR)
-  br
-  
-  label SMTP Port
-  br
-  input.wide(type='number', min='0', max='65536', name='SMTP_PORT', id='SMTP_PORT', value=SMTP_PORT)
   br
   
   label SMTP Domain
@@ -572,6 +578,16 @@ div#smtpPane
     else
       label(id='protoheader') smtp://
     input(name='SMTP_DOMAIN', id='SMTP_DOMAIN', value=SMTP_DOMAIN)
+  
+  label SMTP Address
+  br
+  input.wide(id='SMTP_ADDR', name='SMTP_ADDR', value=SMTP_ADDR)
+  br
+  
+  label SMTP Port
+  br
+  input.wide(type='number', min='0', max='65536', name='SMTP_PORT', id='SMTP_PORT', value=SMTP_PORT)
+  br
   
   label SMTP Password
   br

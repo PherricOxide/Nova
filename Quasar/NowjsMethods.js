@@ -1533,6 +1533,20 @@ everyone.now.GetProxies = function(profile, cb) {
     cb && cb(proxies);  
 };
 
+everyone.now.testSMTPSettings = function(settings, cb) {
+    var args = ['/usr/share/nova/userFiles/config/novatestmail', '-s', settings.SERVER, '-p', settings.PORT, '-f', settings.FROM, '-t', settings.TO, '-x', settings.PASS, '-a', settings.AUTH];
+    child_process.execFile("python", args, {}, function(err, stdout, stderr) {
+        if (err) {
+            var res = "ERROR: " + err;
+            cb && cb(res);
+            return;
+        }
+
+        var res = stdout + stderr;
+
+        cb && cb(res);
+    });
+};
     
 everyone.now.AutoUpdate = function(cb)
 {

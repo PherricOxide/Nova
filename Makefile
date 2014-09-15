@@ -250,6 +250,7 @@ install-data:
 	cp -frup Installer/sharedFiles "$(DESTDIR)/usr/share/nova/sharedFiles"
 	cp -frup Installer/userFiles "$(DESTDIR)/usr/share/nova/userFiles"
 	cp -frup Installer/nova_init "$(DESTDIR)/usr/share/nova"
+	cp -frup Installer/miscFiles/novalr "$(DESTDIR)/etc/logrotate.d"
 	cp -frup Installer/createDatabase.sh "$(DESTDIR)/usr/share/nova"
 
 	#Copy the scripts and logs
@@ -257,8 +258,9 @@ install-data:
 	install Installer/nova_rsyslog_helper "$(DESTDIR)/usr/bin"
 	install Installer/miscFiles/createNovaScriptAlert.py "$(DESTDIR)/usr/bin"
 	install Installer/miscFiles/novamaildaemon.pl "$(DESTDIR)/usr/bin"
-	install Installer/miscFiles/cleannovasendmail.sh "$(DESTDIR)/usr/bin"
+	install Installer/miscFiles/cleannovasendmail "$(DESTDIR)/usr/bin"
 	install Installer/miscFiles/placenovasendmail "$(DESTDIR)/usr/bin"
+	install Installer/miscFiles/novasendmail "$(DESTDIR)/usr/bin"
 	#Install permissions
 	install Installer/miscFiles/sudoers_nova "$(DESTDIR)/etc/sudoers.d/" --mode=0440
 	install Installer/miscFiles/40-nova.conf "$(DESTDIR)/etc/rsyslog.d/" --mode=664
@@ -320,6 +322,10 @@ uninstall-files:
 	rm -f "$(DESTDIR)/usr/bin/nova_init"
 	rm -f "$(DESTDIR)/usr/bin/quasar"
 	rm -f "$(DESTDIR)/usr/bin/novatrainer"
+	rm -f "$(DESTDIR)/usr/bin/cleannovasendmail"
+	rm -f "$(DESTDIR)/usr/bin/novamaildaemon.pl"
+	rm -f "$(DESTDIR)/usr/bin/placenovasendmail"
+	rm -f "$(DESTDIR)/usr/bin/novasendmail"
 	rm -f "$(DESTDIR)/usr/lib/libNova_UI_Core.so"
 	rm -f "$(DESTDIR)/etc/sudoers.d/sudoers_nova"
 	rm -f "$(DESTDIR)/etc/sudoers.d/sudoers_nova_debug"
@@ -327,6 +333,7 @@ uninstall-files:
 	rm -f "$(DESTDIR)/etc/rsyslog.d/40-nova.conf"
 	rm -f "$(DESTDIR)/etc/rsyslog.d/41-nova.conf"
 	rm -f "$(DESTDIR)/etc/sysctl.d/30-novactl.conf"
+	rm -f "$(DESTDIR)/etc/logrotate.d/novalr"
 
 uninstall-permissions:
 	sh debian/postrm
