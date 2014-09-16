@@ -238,6 +238,7 @@ install-data:
 	mkdir -p "$(DESTDIR)/usr/lib"
 	mkdir -p "$(DESTDIR)/usr/share/applications"
 	mkdir -p "$(DESTDIR)/usr/share/nova"
+	mkdir -p "$(DESTDIR)/etc/logrotate.d/"
 	mkdir -p "$(DESTDIR)/usr/share/man/man1"
 	mkdir -p "$(DESTDIR)/var/log/honeyd"
 	mkdir -p "$(DESTDIR)/etc/rsyslog.d/"
