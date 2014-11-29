@@ -165,6 +165,7 @@ void *UpdateIPFilter(void *ptr)
 						try {
 						string captureFilterString = ConstructFilterString(packetCaptures.at(i)->GetIdentifier());
 							packetCaptures.at(i)->SetFilter(captureFilterString);
+							packetCaptures.at(i)->ApplyFilter();
 						}
 						catch (Nova::PacketCaptureException &e)
 						{
