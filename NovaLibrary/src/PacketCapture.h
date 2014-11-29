@@ -32,7 +32,12 @@ public:
 	virtual ~PacketCapture();
 
 	void SetPacketCb(void (*cb)(unsigned char *index, const struct pcap_pkthdr *pkthdr, const unsigned char *packet));
+
+	// Sets the pcap filter to be used
 	void SetFilter(std::string filter);
+
+	// Applies the currently configured filter. This should ONLY be called after the capture has been started.
+	void ApplyFilter();
 
 	pcap_t* GetPcapHandle();
 

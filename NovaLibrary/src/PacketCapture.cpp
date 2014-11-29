@@ -51,6 +51,10 @@ void PacketCapture::SetFilter(string filter)
 {
 	m_filter = filter;
 
+}
+
+void PacketCapture::ApplyFilter()
+{
 	struct bpf_program fp;
 
 	if(pcap_compile(m_handle, &fp, m_filter.c_str(), 0, PCAP_NETMASK_UNKNOWN) == -1)
@@ -140,7 +144,7 @@ void PacketCapture::InternalThreadEntry()
 		}
 
 		int activationReturnValue = pcap_activate(m_handle);
-		SetFilter(m_filter);
+		ApplyFilter();
 
 		if (activationReturnValue == 0 || activationReturnValue == PCAP_ERROR_ACTIVATED)
 		{
