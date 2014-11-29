@@ -229,9 +229,9 @@ block headerAdditions
                 OnNewSuspect(err, suspect);
                 OnNewSuspectGraphs(err, suspect);
             }
-            now.GetSuspect('!{suspect}', '!{interface}', OnNewSuspectDistribute);
-            now.GetIpPortsContacted('!{suspect}', '!{interface}', OnIpPorts);
-            now.GetPacketSizes('!{suspect}', '!{interface}', OnPacketSizes);
+            now.GetSuspect('!{suspectIp}', '!{interface}', OnNewSuspectDistribute);
+            now.GetIpPortsContacted('!{suspectIp}', '!{interface}', OnIpPorts);
+            now.GetPacketSizes('!{suspectIp}', '!{interface}', OnPacketSizes);
             
             now.reverseDNS('#{suspectIp}', reverseDNScb);
             now.GetSuspect('#{suspectIp}', '#{suspectInterface}', OnNewSuspect)

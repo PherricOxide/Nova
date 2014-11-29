@@ -1115,7 +1115,6 @@ app.get('/getSuspectDetails', function (req, res)
         , interface: suspectInterface
         , suspectInterface: suspectInterface
         , featureNames: NovaCommon.nova.GetFeatureNames()
-        ,  suspect: suspectIp
     });
 });
 
