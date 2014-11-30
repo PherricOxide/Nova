@@ -165,6 +165,7 @@ block headerAdditions
     var index = 0;
     function AddLogEntry(line)
     {
+      line = $('<div/>').text(line).html();
       line = line.replace(/ +(?= )/g, '');
       var match = line.match(/(\S+ \S+ \S+) ([^:]+): (\S+) File (.+) at line (\d+): (.*)/);
 
@@ -311,6 +312,7 @@ block headerAdditions
     var honeydIndex = 0;
     function AddHoneydLogEntry(line)
     {
+        line = $('<div/>').text(line).html();
         line = line.replace(/ +(?= )/g, '');
         var match = line.match(/(\S+ \S+ \S+) ([^:]+): (.*)/);
 

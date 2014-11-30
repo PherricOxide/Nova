@@ -319,6 +319,10 @@ block headerAdditions
      
         info += "<B>Overall Classification: </B>" + suspect.classification;
         info += "<BR><BR><B>Hostile KNN neighbors: </B>" + suspect.hostileNeighbors;
+
+        // Sanitize the classification notes since it contains arbitrary attacker injected usernames and passwords
+        suspect.classificationNotes = $('<div/>').text(suspect.classificationNotes).html()
+
         info += "<BR><BR><B>Classification Notes</B><br>" + String(suspect.classificationNotes).replace(/\n/g, "<BR />");
         $("#classificationOutput").html(info); 
         info = "";

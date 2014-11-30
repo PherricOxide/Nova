@@ -205,6 +205,8 @@ block headerAdditions
 
         this.addRow = function(linenum, line)
         {
+          // Sanitize the line since it can contain attacker injected text
+          line = $('<div/>').text(line).html();
           line = line.replace(/ +(?= )/g, '');
           var match = line.match(/(\S+ \S+ \S+) ([^:]+): (\S+) File (.+) at line (\d+): (.*)/);
 
@@ -316,6 +318,8 @@ block headerAdditions
     
         this.addRow = function(linenum, line)
         {
+            // Sanitize the line since it can contain attacker injected text
+            line = $('<div/>').text(line).html();
             line = line.replace(/ +(?= )/g, '');
             var match = line.match(/(\S+ \S+ \S+) ([^:]+): (.*)/);
 
